@@ -10,8 +10,8 @@ from cupyx.scipy import sparse
 
 alpha = 0.01 # Thermal diffusivity
 Lx, Ly = 1.0, 1.0 # Domain limit [0, Lx], [0, Ly]
-nx = int(sys.argv[1]) if len(sys.argv[1]) > 0 else 256 # Grid points
-ny = int(sys.argv[2]) if len(sys.argv[2]) > 0 else 256 # Grid points
+nx = int(sys.argv[1]) if len(sys.argv) > 1 else 256 # Grid points
+ny = int(sys.argv[2]) if len(sys.argv) > 2 else 256 # Grid points
 # nx, ny = 256, 256 # Grid points
 dx = Lx / (nx - 1) # x spacing
 dy = Ly / (ny - 1) # y spacing
@@ -26,7 +26,7 @@ y = cp.linspace(0.0, Ly, ny)
 X, Y = cp.meshgrid(x, y)
 
 # Initial condition (Gaussian pulse)
-A = 100 # Base temperature 100C
+A = 1 # Base temperature 100C
 u = A * cp.exp(-100 * ((X - 0.5)**2 + (Y - 0.5)**2))
 
 # GPU data

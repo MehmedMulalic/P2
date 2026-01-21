@@ -24,7 +24,7 @@ y = np.linspace(0.0, Ly, ny)
 X, Y = np.meshgrid(x, y)
 
 # Initial condition (Gaussian pulse)
-A = 100 # Base temperature 100C
+A = 1 # Base temperature 100C
 u = A * np.exp(-100 * ((X - 0.5)**2 + (Y - 0.5)**2))
 
 # CPU data
@@ -55,5 +55,6 @@ print(f"Time taken: {t_avg:.6f}s")
 # Reshape and save
 u_final = u_flat.reshape((nx, ny))
 
-filename = Path(f"results/numpy_laplace_{nx}_{ny}.csv")
-np.savetxt(filename, u_final, delimiter=",")
+filename = Path(f"results/seq_laplace_{nx}_{ny}.csv")
+if not filename.exists():
+    np.savetxt(filename, u_final, delimiter=",")
