@@ -13,7 +13,7 @@ nx = int(sys.argv[1]) if len(sys.argv) > 1 else 256  # Grid points
 ny = int(sys.argv[2]) if len(sys.argv) > 2 else 256  # Grid points
 dx = Lx / (nx - 1)  # x spacing
 dy = Ly / (ny - 1)  # y spacing
-dt = 1e-4  # Time step
+dt = 0.25 * dx**2 / alpha  # safe explicit Euler step
 t_final = 0.05  # Final simulation time step
 num_steps = int(t_final / dt)
 
@@ -56,5 +56,5 @@ print(f"Time taken: {t_avg:.6f}s")
 u_final = u_flat.reshape((nx, ny))
 
 filename = Path(f"results/seq_laplace_{nx}_{ny}.csv")
-if not filename.exists():
-    np.savetxt(filename, u_final, delimiter=",")
+# if not filename.exists():
+np.savetxt(filename, u_final, delimiter=",")

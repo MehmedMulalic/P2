@@ -57,5 +57,5 @@ t = t_avg / NUM_EXECUTIONS
 print(f"Time taken: {t_avg}s")
 
 filename = Path(f"results/cupy_laplace_{nx}_{ny}.csv")
-if not filename.exists():
-    np.savetxt(filename, u_cpu, delimiter=",")
+# if not filename.exists():
+np.savetxt(filename, u_cpu, delimiter=",")
