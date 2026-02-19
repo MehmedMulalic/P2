@@ -1,74 +1,82 @@
+import numpy as np
 import time
 import sys
-import numpy as np
+from scipy import ndimage
 from pathlib import Path
 
-# Parameters
-alpha = 0.01
-Lx, Ly = 1.0, 1.0
-nx = int(sys.argv[1]) if len(sys.argv[1]) > 0 else 256 # Grid points
-ny = int(sys.argv[2]) if len(sys.argv[2]) > 0 else 256 # Grid points
-# nx, ny = 256, 256
-dx = Lx / (nx - 1)
-dy = Ly / (ny - 1)
+# Execution usage: ./file.py <nx> <ny>
+NUM_EXECUTIONS = 1
+SAVE_INTERVAL = 100
+
+A = 100.0               # Peak temperature (°C)
+sigma_initial = 0.2    # Initial width (m)
+x0, y0 = 0.5, 0.5       # Centre
+alpha = 1.6563e-4        # Thermal diffusivity of pure silver (99.9%) (m^2/s)
+Lx, Ly = 1.0, 1.0       # Domain limit (metres)
+
+# Grid points
+nx = int(sys.argv[1]) if len(sys.argv) > 1 else 256
+ny = int(sys.argv[2]) if len(sys.argv) > 2 else 256
+
+dx = Lx / (nx - 1)      # x spacing
+dy = Ly / (ny - 1)      # y spacing
+dt = 0.005              # Time step (s)
+t_final = 60          # Final time step (s)
+num_steps = int(t_final / dt)
+
+# Stability
+r = alpha * dt / dx**2
+if (r > 0.25):
+    raise Exception("Unstable simulation")
 
 print(f"Executing kernel with grid points [{nx},{ny}]")
 
-# Grid
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
+x = np.linspace(0.0, Lx, nx)
+y = np.linspace(0.0, Ly, ny)
 X, Y = np.meshgrid(x, y)
 
-# Time parameters
-dt = 1e-6          # MUST be small for stability
-t_final = 0.05
-nt = int(t_final / dt)
+# Initial condition (Gaussian bump)
+u0 = A * np.exp( -((X - x0)**2 + (Y - y0)**2) / (2 * sigma_initial**2) )
 
-# Initial condition (Gaussian pulse)
-u = np.exp(-100 * ((X - 0.5)**2 + (Y - 0.5)**2))
+# Animation snapshots as a tuple (time, output)
+snapshots = []
+snapshots.append( (0.0, u0.copy()) )
 
-# Storage (optional)
-U = np.zeros((nt + 1, nx, ny))
-U[0] = u.copy()
+# 5-point stencil Laplacian kernel
+kernel = np.array([[0, 1, 0],
+                   [1, -4, 1],
+                   [0, 1, 0]], dtype=np.float32) / dx**2
 
-NUM_EXECUTION=1
 t_avg: float = 0.0
-for _ in range(NUM_EXECUTION):
-    # Time stepping loop
+for _ in range(NUM_EXECUTIONS):
     t0 = time.perf_counter()
-    for n in range(nt):
-        u_step = u.copy()
+    
+    for step in range(num_steps):
+        laplacian = ndimage.convolve(u0, kernel, mode='reflect')
+        u0 += alpha * dt * laplacian
 
-        # Laplacian (interior points only)
-        laplacian = (
-            (u[2:, 1:-1] - 2*u[1:-1, 1:-1] + u[:-2, 1:-1]) / dx**2 +
-            (u[1:-1, 2:] - 2*u[1:-1, 1:-1] + u[1:-1, :-2]) / dy**2
-        )
+        if SAVE_INTERVAL > 0 and step % SAVE_INTERVAL == 0:
+            u_current = u0.copy()
+            current_time = step * dt
 
-        # Euler update
-        u_step[1:-1, 1:-1] += alpha * dt * laplacian
-
-        # Neumann BC (zero gradient)
-        u_step[0, 1:-1] = u_step[1, 1:-1]       # top
-        u_step[-1, 1:-1] = u_step[-2, 1:-1]     # bottom
-        u_step[1:-1, 0] = u_step[1:-1, 1]       # left
-        u_step[1:-1, -1] = u_step[1:-1, -2]     # right
-
-        # Corners (optional: average of neighbors)
-        u_step[0, 0] = u_step[1, 0]
-        u_step[0, -1] = u_step[1, -1]
-        u_step[-1, 0] = u_step[-2, 0]
-        u_step[-1, -1] = u_step[-2, -1]
-
-        u = u_step
-        U[n + 1] = u
+            snapshots.append( (current_time, u_current) )
 
     t1 = time.perf_counter()
     t_avg += t1-t0
 
-t = t_avg / NUM_EXECUTION
+t = t_avg / NUM_EXECUTIONS
 print(f"Time taken: {t}s")
 
-filename = Path(f"results/seq_stencil_explicit_{nx}_{ny}.csv")
-if not filename.exists():
-    np.savetxt(filename, U[-1], delimiter=",")
+u_final = u0.copy()
+snapshots.append( (t_final, u_final.copy()) )
+
+filename_dir = Path(f"results")
+filename_dir.mkdir(exist_ok=True)
+filename = filename_dir / f"seq_stencil_explicit_{nx}_{ny}.csv"
+np.savetxt(filename, u_final, delimiter=",")
+
+snapshot_dir = Path(f"snapshots")
+snapshot_dir.mkdir(exist_ok=True)
+for i, (t, u_snapshot) in enumerate(snapshots):
+    filename = snapshot_dir / f"seq_stencil_explicit_t{t:.3f}.csv"
+    np.savetxt(filename, u_snapshot, delimiter=",")
