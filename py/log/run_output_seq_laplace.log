@@ -1,0 +1,4 @@
+Executing kernel with grid points [256,256]
+Time taken: 44.16676635295153s
+Executing kernel with grid points [512,512]
+Time taken: 172.22754629701376s

@@ -1,0 +1,50 @@
+Executing kernel with grid points [256,256]
+Time taken: 13.087727166712284s
+Executing kernel with grid points [256,256]
+Time taken: 13.460714988410473s
+Executing kernel with grid points [256,256]
+Time taken: 12.718684814870358s
+Executing kernel with grid points [256,256]
+Time taken: 13.28583500534296s
+Executing kernel with grid points [256,256]
+Time taken: 12.997825272381306s
+Executing kernel with grid points [512,512]
+Time taken: 13.706411376595497s
+Executing kernel with grid points [512,512]
+Time taken: 13.197843216359615s
+Executing kernel with grid points [512,512]
+Time taken: 12.864231951534748s
+Executing kernel with grid points [512,512]
+Time taken: 12.831977404654026s
+Executing kernel with grid points [512,512]
+Time taken: 13.103314504027367s
+Executing kernel with grid points [1024,1024]
+Time taken: 13.227418825030327s
+Executing kernel with grid points [1024,1024]
+Time taken: 13.012473806738853s
+Executing kernel with grid points [1024,1024]
+Time taken: 13.24718851596117s
+Executing kernel with grid points [1024,1024]
+Time taken: 13.63023703545332s
+Executing kernel with grid points [1024,1024]
+Time taken: 13.178221061825752s
+Executing kernel with grid points [1536,1536]
+Time taken: 22.97638188302517s
+Executing kernel with grid points [1536,1536]
+Time taken: 23.07182139158249s
+Executing kernel with grid points [1536,1536]
+Time taken: 23.033001758158207s
+Executing kernel with grid points [1536,1536]
+Time taken: 22.931637324392796s
+Executing kernel with grid points [1536,1536]
+Time taken: 22.940177373588085s
+Executing kernel with grid points [2048,2048]
+Time taken: 38.414130091667175s
+Executing kernel with grid points [2048,2048]
+Time taken: 38.39887782931328s
+Executing kernel with grid points [2048,2048]
+Time taken: 38.40448912978172s
+Executing kernel with grid points [2048,2048]
+Time taken: 38.42328668385744s
+Executing kernel with grid points [2048,2048]
+Time taken: 38.45197790116072s
