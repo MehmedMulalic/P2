@@ -1,2 +1,5 @@
 /py/results
 /py/snapshots
+/julia/
+/venv/
+./build.sh
