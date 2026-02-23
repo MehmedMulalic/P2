@@ -9,7 +9,7 @@
 
 ## Overview
 
-This repository contains the implementations and results accompanying the report *Evaluating High-Level Abstraction Frameworks for the Heat Equation*. The study evaluates the performance of high-level Python GPU frameworks — **CuPy** and **Numba** — against a sequential NumPy/SciPy baseline for solving the 2D Heat Equation using three distinct numerical methods: Five-Point Stencil, Sparse Laplacian Matrix, and Spectral DCT.
+This repository contains the implementations and results accompanying the report *Evaluating High-Level Abstraction Frameworks for the Heat Equation*. The study evaluates the performance of high-level Python GPU frameworks — CuPy and Numba — against a sequential NumPy/SciPy baseline for solving the 2D Heat Equation using three distinct numerical methods: Five-Point Stencil, Sparse Laplacian Matrix, and Spectral DCT.
 
 ---
 
@@ -37,7 +37,7 @@ Numba    0.62
 
 Install dependencies:
 
-Run the `./install.nvidia.sh` script to install all requirements with Conda.
+Run the `install.nvidia.sh` script to install all requirements with Conda.
 
 ---
 
@@ -46,7 +46,7 @@ Run the `./install.nvidia.sh` script to install all requirements with Conda.
 All scripts accept optional grid size arguments. If omitted, they default to a 256×256 grid. Output CSV files are saved to the `results/` directory.
 
 ```bash
-python <file.py> <nx> <ny>
+python cupy_stencil_explicit.py <nx> <ny>
 ```
 
 ---
@@ -68,11 +68,7 @@ python <file.py> <nx> <ny>
 
 ## Profiling
 
-GPU profiling was performed using NVIDIA Nsight Systems at grid size 256×256. Profile files (`.nsys-rep` and `.sqlite`) are provided in the `profiling/` directory. To regenerate profiles:
-
-```bash
-nsys profile python ./cupy_stencil_explicit.py
-```
+GPU profiling was performed using NVIDIA Nsight Systems at grid size 256×256. Profile files are provided in the `profiling/` directory. To regenerate profiles, run `nsys profile python cupy_stencil_explicit.py` and to read the report, run `nsys stats cupy_stencil_explicit.nsys-rep`.
 
 ---
 
