@@ -23,7 +23,7 @@ Below is the time evolution of the 2D heat equation using the sequential stencil
 
 ## Requirements
 
-All experiments were conducted on an **NVIDIA Tesla A100** (Ampere, 80 GB VRAM) with CUDA 12.8.
+All experiments were conducted on an NVIDIA Tesla A100 (Ampere, 80 GB VRAM) with CUDA 12.8.
 
 ### Python Dependencies
 
